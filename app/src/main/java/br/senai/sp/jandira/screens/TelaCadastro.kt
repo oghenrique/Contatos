@@ -33,16 +33,44 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import br.senai.sp.jandira.R
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import br.senai.sp.jandira.model.Contato
+import br.senai.sp.jandira.repository.ContatoRepository
 
 @Composable
 fun TelaCadastro() {
+
+    val cr = ContatoRepository(LocalContext.current)
+
+    var nomeState = remember {
+        mutableStateOf("")
+    }
+
+    var foneState = remember {
+        mutableStateOf("")
+    }
+
+    var emailState = remember {
+        mutableStateOf("")
+    }
+
+    var dataNascimentoState = remember {
+        mutableStateOf("")
+    }
+
+    var amigoState = remember {
+        mutableStateOf(false)
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF10238D)
@@ -124,8 +152,10 @@ fun TelaCadastro() {
                 }
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = nomeState.value,
+                    onValueChange = {
+                                    nomeState.value = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),
@@ -138,8 +168,10 @@ fun TelaCadastro() {
                     }
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = foneState.value,
+                    onValueChange = {
+                        foneState.value = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),
@@ -152,8 +184,10 @@ fun TelaCadastro() {
                     }
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = emailState.value,
+                    onValueChange = {
+                        emailState.value = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),
@@ -166,8 +200,10 @@ fun TelaCadastro() {
                     }
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = dataNascimentoState.value,
+                    onValueChange = {
+                                    dataNascimentoState.value = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),
@@ -185,8 +221,10 @@ fun TelaCadastro() {
                     verticalAlignment =     Alignment.CenterVertically
                 ) {
                     Checkbox(
-                        checked = false,
-                        onCheckedChange = {}
+                        checked = amigoState.value,
+                        onCheckedChange = {
+                            amigoState.value = it
+                        }
                     )
                     Text(
                         text = stringResource(id = R.string.contact_friend)
@@ -198,7 +236,16 @@ fun TelaCadastro() {
                         .fillMaxWidth()
                         .padding(horizontal = 32.dp),
                     shape = RoundedCornerShape(8.dp),
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        val contato = Contato(
+                            nome = nomeState.value,
+                            telefone = foneState.value,
+                            email = emailState.value,
+                            dataNascimento = dataNascimentoState.value,
+                            isAmigo = amigoState.value
+                        )
+                        cr.salvar(contato)
+                    }
                 ) {
                     Text(text = stringResource(id = R.string.save_contact))
                 }
